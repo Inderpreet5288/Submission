@@ -1,0 +1,72 @@
+<h2 class="title">Submissions</h2>
+
+<div class="filters">
+  <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" />
+  <select [(ngModel)]="selectedForm">
+    <option value="">Select Form</option>
+    <option value="form1">Form 1</option>
+    <option value="form2">Form 2</option>
+  </select>
+  <select [(ngModel)]="selectedStatus">
+    <option value="">Select Status</option>
+    <option value="Low Risk">Low Risk</option>
+    <option value="Uncomplete">Uncomplete</option>
+    <option value="Unassigned">Unassigned</option>
+  </select>
+  <input type="date" [(ngModel)]="selectedDate" />
+  <div class="toggle-buttons">
+    <button [class.active]="viewMode === 'map'" (click)="viewMode = 'map'">Map</button>
+    <button [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">List</button>
+  </div>
+  <button class="export-btn">📤 Export</button>
+</div>
+
+<table class="submissions-table">
+  <thead>
+    <tr>
+      <th><input type="checkbox" /></th>
+      <th>Task</th>
+      <th>Status</th>
+      <th>From</th>
+      <th>To</th>
+      <th>Customer Address</th>
+      <th>Due Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of pagedSubmissions">
+      <td><input type="checkbox" /></td>
+      <td>{{ item.task }}</td>
+      <td>
+        <span class="badge" [ngStyle]="{ 'background-color': item.statusColor }">
+          {{ item.status }}
+        </span>
+      </td>
+      <td>{{ item.from }}</td>
+      <td>{{ item.to }}</td>
+      <td>{{ item.address }}</td>
+      <td>
+        <span [style.color]="item.dueDateColor">{{ item.dueDate }}</span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="pagination-note">
+    Showing {{ (currentPage - 1) * itemsPerPage + 1 }} –
+    {{ Math.min(currentPage * itemsPerPage, submissions.length) }}
+    of {{ submissions.length }} submissions
+  </p>
+  
+  <div class="pagination">
+    <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">«</button>
+  
+    <button *ngFor="let page of [].constructor(totalPages); let i = index"
+            [class.active]="currentPage === i + 1"
+            (click)="goToPage(i + 1)">
+      {{ i + 1 }}
+    </button>
+  
+    <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">»</button>
+  </div>
+  
